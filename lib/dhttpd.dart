@@ -9,9 +9,9 @@ import 'src/options.dart';
 
 class Dhttpd {
   HttpServer server;
-  final String path;
+  String path;
 
-  Dhttpd({this.path});
+  Dhttpd();
 
   Dhttpd._(this.server, this.path);
 
