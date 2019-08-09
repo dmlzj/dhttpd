@@ -22,12 +22,12 @@ class Dhttpd {
   String get urlBase => 'http://$host:$port/';
 
   Future<Dhttpd> start(
-      {String path, int port = defaultPort, address = defaultHost}) async {
+      {String path, int port = defaultPort, address = defaultHost, String defaultDocument = 'index.html'}) async {
     path ??= Directory.current.path;
 
     final pipeline = const Pipeline()
         .addMiddleware(logRequests())
-        .addHandler(createStaticHandler(path, defaultDocument: 'index.html'));
+        .addHandler(createStaticHandler(path, defaultDocument: defaultDocument));
 
     server = await io.serve(pipeline, address, port);
     // _server.close();
