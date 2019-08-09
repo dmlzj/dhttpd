@@ -8,18 +8,20 @@ import 'package:shelf_static/shelf_static.dart';
 import 'src/options.dart';
 
 class Dhttpd {
-  final HttpServer _server;
+  HttpServer server;
   final String path;
 
-  Dhttpd._(this._server, this.path);
+  Dhttpd({this.path});
 
-  String get host => _server.address.host;
+  Dhttpd._(this.server, this.path);
 
-  int get port => _server.port;
+  String get host => server.address.host;
+
+  int get port => server.port;
 
   String get urlBase => 'http://$host:$port/';
 
-  static Future<Dhttpd> start(
+  Future<Dhttpd> start(
       {String path, int port = defaultPort, address = defaultHost}) async {
     path ??= Directory.current.path;
 
@@ -27,9 +29,10 @@ class Dhttpd {
         .addMiddleware(logRequests())
         .addHandler(createStaticHandler(path, defaultDocument: 'index.html'));
 
-    final server = await io.serve(pipeline, address, port);
+    server = await io.serve(pipeline, address, port);
+    // _server.close();
     return Dhttpd._(server, path);
   }
 
-  Future destroy() => _server.close();
+  Future destroy() => server.close();
 }
